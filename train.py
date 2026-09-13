@@ -80,9 +80,9 @@ torch.backends.cuda.matmul.allow_tf32 = True
 torch.backends.cudnn.allow_tf32       = True
 device_type = 'cuda' if 'cuda' in device else 'cpu'
 ptdtype     = {
-                'float32'  : torch.float32,
-                'float16'  : torch.float16,
                 'bfloat16' : torch.bfloat16,
+                'float16'  : torch.float16,
+                'float32'  : torch.float32,
               }[dtype]
 
 ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=device_type, dtype=ptdtype)
