@@ -30,8 +30,8 @@ eval_iters    = 200
 eval_only     = False
 always_save_checkpoint = True
 #------------------------------ wandb logging ----------------------------------
-wandb_log = False
-wandb_project = 'owt'
+wandb_log      = False
+wandb_project  = 'owt'
 wandb_run_name = 'gpt2'
 #------------------------------ adamW optimizer --------------------------------
 learning_rate = 6e-4 # 0.6000
