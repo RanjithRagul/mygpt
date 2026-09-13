@@ -59,9 +59,9 @@ if ddp: # GPU
   ddp_local_rank = int(os.environ['LOCAL_RANK'])
   ddp_world_size = int(os.environ['WORLD_SIZE'])
   assert gradient_Accumulation % ddp_world_size == 0
-  #------------------------------------------------
-  seed_offset    = ddp_rank
+
   master_process = ddp_rank ==  0
+  seed_offset    = ddp_rank
   device         = f'cuda:{dpp_local_rank}'
   torch.cuda.set_device(device)
   gradient_accumulation_stes //= ddp_world_size
