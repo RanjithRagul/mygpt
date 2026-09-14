@@ -118,7 +118,7 @@ if os.path.exists(meta_path):
   with open(meta_path, 'rb') as f:
     meta = pickle.load(f)
   meta_vocab_size = meta['vocab_size']
-  print(f'found vocab_size = {meta_vocab_size} (inside {meta_path})')
+  print(f'found vocab_size: {meta_vocab_size}, inside: {meta_path}')
 
 model_args   = dict(
                     block_size = block_size,
