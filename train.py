@@ -108,7 +108,7 @@ def get_batch(split):
 
 # init these up here, can override if init_from='resume' (i.e, from a checkpoint)
 iter_num = 0
-bext_val_loss = 1e9 # 1000,000,000 = 1Billion
+bext_val_loss = 1e9 # 3K, 6M, 9B, 12T
 
 # attempt to derive vocab_size from the dataset
 meta_path = os.path.join(data_dir, 'meta.pkl')
