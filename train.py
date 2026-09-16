@@ -48,7 +48,6 @@ lr_decay_iters = 600000 # should be ~= max_iters per Chinchilla
 min_lr = 6e-5 # minimum learning rate, should be ~= learning_rate/10 per Chinchilla
 #--------------------------------------------------------------------------
 device = 'cuda'
-gradient_Accumulation = 5 * 8
 dtype = 'bfloat16' if torch.cuda.is_available() and torch.cuda.is_bf16_supported() else 'float16'
 #--------------------------------------------------------------------------
 backend = 'nccl' # gloo, etc
@@ -59,13 +58,13 @@ if ddp: # GPU
   ddp_rank       = int(os.environ['RANK'])
   ddp_local_rank = int(os.environ['LOCAL_RANK'])
   ddp_world_size = int(os.environ['WORLD_SIZE'])
-  assert gradient_Accumulation % ddp_world_size == 0
+  assert gradient_accumulation % ddp_world_size == 0
 
   master_process = ddp_rank ==  0
   seed_offset    = ddp_rank
   device         = f'cuda:{ddp_local_rank}'
   torch.cuda.set_device(device)
-  gradient_accumulation_stes //= ddp_world_size
+  gradient_accumulation_steps //= ddp_world_size
 else: # CPU
   master_process = True
   seed_offset    = 0
