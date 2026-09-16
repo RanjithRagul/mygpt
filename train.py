@@ -63,7 +63,7 @@ if ddp: # GPU
 
   master_process = ddp_rank ==  0
   seed_offset    = ddp_rank
-  device         = f'cuda:{dpp_local_rank}'
+  device         = f'cuda:{ddp_local_rank}'
   torch.cuda.set_device(device)
   gradient_accumulation_stes //= ddp_world_size
 else: # CPU
