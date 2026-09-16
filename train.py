@@ -257,7 +257,7 @@ while True:
         'iter'      : iter_name,
         'mfu'       : running_mfu * 100,
         'train/loss': losses['train'],
-        'val/losses': losses['val'],
+        'val/loss'  : losses['val'],
       })
 
     if losses['val'] < best_val_loss or always_save_checkpoint:
