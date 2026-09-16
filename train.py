@@ -91,7 +91,7 @@ ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=
 data_dir = os.path.join('data', dataset)
 def get_batch(split):
   if split == 'train':
-    data   = np.memmap(os.path.join(data_dir, 'train.bin'), dtype=np.uint16, mode='r')
+    data = np.memmap(os.path.join(data_dir, 'train.bin'), dtype=np.uint16, mode='r')
   else:
     data = np.memmap(os.path.join(data_dir, 'val.bin'  ), dtype=np.uint16, mode='r')
     
