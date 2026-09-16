@@ -55,7 +55,7 @@ backend = 'nccl' # gloo, etc
 ddp     = int(os.environ.get('RANK', -1)) != -1
 
 if ddp: # GPU
-  init_process_groups(backend=backend)
+  init_process_group(backend=backend)
   ddp_rank       = int(os.environ['RANK'])
   ddp_local_rank = int(os.environ['LOCAL_RANK'])
   ddp_world_size = int(os.environ['WORLD_SIZE'])
