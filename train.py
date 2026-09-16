@@ -174,7 +174,6 @@ elif init_from.startwith('gpt2'):
 # cropdown the model block size if desired, using model surgery
 if block_size < model.config.block_size:
   mode.crop_block_size(block_size)
-  model_args['block_size'] = block_size
   
 model.to(device)
 '''
