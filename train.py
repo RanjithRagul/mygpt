@@ -34,6 +34,7 @@ wandb_log      = False
 wandb_project  = 'owt'
 wandb_run_name = 'gpt2'
 #------------------------------ adamW optimizer --------------------------------
+complie = True
 learning_rate = 6e-4 # 0.6000
 max_iters = 600000 
 weight_decay = 1e-1 # 0.1
@@ -94,7 +95,7 @@ def get_batch(split):
   else:
     data = np.memmap(os.path.join(data_dir, 'val.bin'  ), dtype=np.uint16, mode='r')
     
-  ix = torch.ranint(len(data) - block_size, (batch_size,))
+  ix = torch.randint(len(data) - block_size, (batch_size,))
   x  = torch.stack([torch.from_numpy((data[i  :i+block_size ]).astype(np.int64))  for i in ix])
   y  = torch.stack([torch.from_numpy((data[i+1:i+1+block_size]).astype(np.int64)) for i in ix])
 
@@ -152,10 +153,10 @@ elif init_from == 'resume':
   model = GPT(gptconfig)
   
   state_dict = checkpoint['model']
-  unwanter_prefix = '_orgin_mod.'
-  N_unwanter_prefix = len(unwanted_prefix)
+  unwanted_prefix = '_orig_mod.'
+  N_unwanted_prefix = len(unwanted_prefix)
   
-  for k in state_dict.keys():
+  for k, v in list(state_dict.items()):
     if k.startswith(unwanted_prefix):
       state_dict[k[N_unwanted_prefix:]] = state_dict.pop(k)
       
@@ -163,8 +164,8 @@ elif init_from == 'resume':
   iter_num = checkpoint['iter_num']
   best_val_loss = checkpoint['best_val_loss']
   
-elif init_from.startwith('gpt2'):
-  print('Initializing from OpenAI GPT-2 weights: {init_from}')
+elif init_from.startswith('gpt2'):
+  print(f'Initializing from OpenAI GPT-2 weights: {init_from}')
   override_args = dict(dropout=dropout)
   model = GPT.from_pretrained(init_from, override_args)
   for k in ['block_size', 'vocab_size', 'n_embd', 'n_layer', 'n_head', 'bias']:
@@ -172,7 +173,7 @@ elif init_from.startwith('gpt2'):
 
 # cropdown the model block size if desired, using model surgery
 if block_size < model.config.block_size:
-  mode.crop_block_size(block_size)
+  model.crop_block_size(block_size)
   
 model.to(device)
 '''
@@ -214,7 +215,7 @@ def estimate_loss():
     losses = torch.zeros(eval_iters)
     for k in range(eval_iters):
       X, Y = get_batch(split)
-      with cts:
+      with ctx:
         logits, loss = model(X, Y)
       losses[k] = loss.item()
     out[split]  = losses.mean()
@@ -224,7 +225,7 @@ def estimate_loss():
 def get_lr(it:float) -> float:
   if it < warmup_iters:
     return learning_rate * (it + 1) / (warmup_iters + 1)
-  if lr_decayiters < it:
+  if lr_decay_iters < it:
     return min_lr
   decay_ratio = (it - warmup_iters) / (lr_decay_iters - warmup_iters)
   coeff       = 0.5 * (1 + math.cos(math.pi * decay_ratio))
@@ -245,14 +246,14 @@ while True:
   for param_group in optimizer.param_groups:
     param_group['lr'] = lr
 
-  if iter_num % eval_interval and master_process:
+  if iter_num % eval_interval == 0 and master_process:
     losses = estimate_loss()
     print(f'step: {iter_num}, train_loss: {losses['train']:.4f}, val_loss: {losses['val']:.4f}')
   
     if wandb_log:
       wandb.log({
         'lr'        : lr,
-        'iter'      : iter_name,
+        'iter'      : iter_nam,
         'mfu'       : running_mfu * 100,
         'train/loss': losses['train'],
         'val/loss'  : losses['val'],
@@ -287,15 +288,16 @@ while True:
 
   if grad_clip != 0.0:
     scaler.unscale_(optimizer)
-    torch.nn.utils.clip_grad_norm(model.parameters(), grad_clip)
+    torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
   scaler.step(optimizer)
-  optimizer.zero_grad(set_to_none = True)
+  scaler.update()
+  optimizer.zero_grad(set_to_none=True)
 
   # timing and logging
   t1 = time.time()
   dt = t1 - t0
   t0 = t1
-  if iter_num % log_interval == 0 and master_processs:
+  if iter_num % log_interval == 0 and master_process:
     lossf = loss.item() * gradient_accumulation_steps
     if 4 < local_iter_num:
       mfu         = raw_model.estimate_mfu(batch_size * gradient_accumulation_steps, dt)
@@ -309,4 +311,4 @@ while True:
     break
 
 if ddp:
-  destory_process_group()
+  destroy_process_group()
