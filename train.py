@@ -301,7 +301,7 @@ while True:
     lossf = loss.item() * gradient_accumulation_steps
     if 4 < local_iter_num:
       mfu         = raw_model.estimate_mfu(batch_size * gradient_accumulation_steps, dt)
-      running_mfu = mfu if running_mfu == -1 else (0.9 * running_mfu) + (0.1 * mfu) # 90% -> prev + 10% current
+      running_mfu = mfu if running_mfu == -1 else (0.9 * running_mfu) + (0.1 * mfu) # 90% previous + 10% current
   print(f'iter: {iter_num}, loss: {lossf:.4f}, time: {dt * 1000:.2f}ms, mfu: {running_mfu * 100:.2f}%')
   
   iter_num += 1
