@@ -96,7 +96,7 @@ def get_batch(split):
     
   ix = torch.ranint(len(data) - block_size, (batch_size,))
   x  = torch.stack([torch.from_numpy((data[i  :i+block_size ]).astype(np.int64))  for i in ix])
-  y  = torch.stack([torch.from_numpy((data[i+1:i+1+block_size]).astype(np.int64)) for i in id])
+  y  = torch.stack([torch.from_numpy((data[i+1:i+1+block_size]).astype(np.int64)) for i in ix])
 
   if device_type == 'cuda':
     x = x.pin_memory().to(device, non_blocking=True)
