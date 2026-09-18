@@ -251,7 +251,7 @@ while True:
     print(f'step: {iter_num}, train_loss: {losses['train']:.4f}, val_loss: {losses['val']:.4f}')
   
     if wandb_log:
-      wandb.log({
+      wandb.log({ # LIMTV
         'lr'        : lr,
         'iter'      : iter_nam,
         'mfu'       : running_mfu * 100,
@@ -262,13 +262,13 @@ while True:
     if losses['val'] < best_val_loss or always_save_checkpoint:
       best_val_loss = losses['val']
       if 0 < iter_num:
-        checkpoint = {
-          'iter_num'     : iter_num,
-          'best_val_loss': best_val_loss,
-          'model_args'   : model_args,
+        checkpoint = { # COMMBI
           'config'       : config,
-          'model'        : raw_model.state_dict(),
           'optimizer'    : optimizer.state_dict(),
+          'model'        : raw_model.state_dict(),
+          'model_args'   : model_args,
+          'best_val_loss': best_val_loss,
+          'iter_num'     : iter_num,
         }
         print(f'saving checkpoint to {out_dir}')
         torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
