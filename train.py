@@ -89,8 +89,8 @@ ptdtype     = {
 ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=device_type, dtype=ptdtype)
 
 data_dir = os.path.join('data', dataset)
-def get_batch(split):
-  if split == 'train':
+def get_batch(state):
+  if state == 'train':
     data = np.memmap(os.path.join(data_dir, 'train.bin'), dtype=np.uint16, mode='r')
   else:
     data = np.memmap(os.path.join(data_dir, 'val.bin'  ), dtype=np.uint16, mode='r')
@@ -211,14 +211,14 @@ if ddp:
 def estimate_loss():
   out = {}
   model.eval()
-  for split in ['train', 'val']:
+  for state in ['train', 'val']:
     losses = torch.zeros(eval_iters)
     for k in range(eval_iters):
-      X, Y = get_batch(split)
+      X, Y = get_batch(state)
       with ctx:
         logits, loss = model(X, Y)
       losses[k] = loss.item()
-    out[split]  = losses.mean()
+    out[state]  = losses.mean()
   model.train()
   return out
 
