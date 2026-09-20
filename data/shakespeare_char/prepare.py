@@ -45,3 +45,13 @@ meta = {
   'itos'      : itos,       # dict
   'stoi'      : stoi,       # dict
 }
+
+with open(os.path.join(os.path.dirname(__file__), 'meta.pkl'), 'wb') as f:
+  pickle.dump(meta, f)
+
+# N of char = 1115394
+# unique char ↓
+# !$&',-.3:;?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+# vocab size: 65
+# train has 1003854 tokens, 90%
+# val has 111540 tokens, 10%
