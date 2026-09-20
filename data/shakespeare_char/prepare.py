@@ -41,7 +41,7 @@ train_ids = np.array(train_ids, dtype=np.uint16)
 val_ids   = np.array(val_ids,   dtype=np.uint16)
 
 meta = {
-  'vocab_size': vocab_size,
-  'itos'      : itos,
-  'stoi'      : stoi,
+  'vocab_size': vocab_size, # int
+  'itos'      : itos,       # dict
+  'stoi'      : stoi,       # dict
 }
