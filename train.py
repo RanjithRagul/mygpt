@@ -14,33 +14,36 @@ from model import GPTConfig, GPT
 out_dir = 'out'
 dataset = 'openwebtext'
 #------------------------------ config-1 ---------------------------------------
+#B³N³DG
 batch_size = 12
 block_size = 1024
+bias    = False
 n_layer = 12
 n_head  = 12
 n_embd  = 768
 dropout = 0.0
-bias    = False
 gradient_accumulation_steps = 5 * 8
 #------------------------------ config-2 ---------------------------------------
+# AILEEE
+always_save_checkpoint = True
 init_from     = 'scratch'
-eval_interval = 2000
 log_interval  = 1
+eval_interval = 2000
 eval_iters    = 200
 eval_only     = False
-always_save_checkpoint = True
 #------------------------------ wandb logging ----------------------------------
 wandb_log      = False
 wandb_project  = 'owt'
 wandb_run_name = 'gpt2'
 #------------------------------ adamW optimizer --------------------------------
+# (BMW)² LC DG, bmw local dog 
 complie = True
 learning_rate = 6e-4 # 0.6000
 max_iters = 600000 
 weight_decay = 1e-1 # 0.1
 beta1 = 0.9
 beta2 = 0.95
-grad_clip = 1.0 # clip gradients at this value, or disable if == 0.0
+grad_clip = 1.0 # disable if == 0.0
 
 # learning rate decay settings
 decay_lr = True # whether to decay the learning rate
