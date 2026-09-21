@@ -280,11 +280,11 @@ while True:
   for micro_step in range(gradient_accumulation_steps):
     if ddp:
       model.require_backward_grad_sync = (micro_step == gradient_accumulation_steps-1) # last  iteration
+    # get_batch -> train -> update_loss_avg -> update_loss & backward
+    X, Y = get_batch('train')
     with ctx:
       logits, loss = model(X, Y)
       loss = loss / gradient_accumulation_steps
-      
-    X, Y = get_batch('train')
     scaler.scale(loss).backward()
 
   if grad_clip != 0.0:
