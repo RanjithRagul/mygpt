@@ -99,7 +99,7 @@ def get_batch(state):
     data = np.memmap(os.path.join(data_dir, 'val.bin'  ), dtype=np.uint16, mode='r')
     
   ix = torch.randint(len(data) - block_size, (batch_size,))
-  x  = torch.stack([torch.from_numpy((data[i  :i+block_size ]).astype(np.int64))  for i in ix])
+  x  = torch.stack([torch.from_numpy((data[i  :i+block_size  ]).astype(np.int64)) for i in ix])
   y  = torch.stack([torch.from_numpy((data[i+1:i+1+block_size]).astype(np.int64)) for i in ix])
 
   if device_type == 'cuda':
