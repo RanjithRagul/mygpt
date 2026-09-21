@@ -142,7 +142,6 @@ if init_from == 'scratch':
   model_args['vocab_size'] = meta_vocab_size if meta_vocab_size is not None else 50304
   gptconfig = GPTConfig(**model_args)
   model = GPT(gptconfig)
-  
 elif init_from == 'resume':
   print(f'Resuming training from {out_dir}')
   ckpt_path  = os.path.join(out_dir, 'ckpt.pt')
@@ -166,7 +165,6 @@ elif init_from == 'resume':
   model.load_state_dict(state_dict)
   iter_num = checkpoint['iter_num']
   best_val_loss = checkpoint['best_val_loss']
-  
 elif init_from.startswith('gpt2'):
   print(f'Initializing from OpenAI GPT-2 weights: {init_from}')
   override_args = dict(dropout=dropout)
