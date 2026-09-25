@@ -376,19 +376,17 @@ class GPT(nn.Module):
 
 	@torch.no_grad()
 	def generate(self, idx:Tensor, max_new_tokens:int, temperature:float=1.0, top_k:int | None=None)->Tensor:
-		for _ in range(max_new_tokens):
-			idx_cond = idx if idx.size(1) <= self.config.block_size else idx[:, -self.config.block_size:]
-			# also called:
-			# i = min(idx.size(1), self.config.block_size)
-			# idx_cond = idx[:, -i:]
-			#-----------------------------------------------------------
+		idx = idx if idx.size(1) <= self.config.block_size else idx[:, -self.config.block_size:]
+		# also called:
+		# i = min(idx.size(1), self.config.block_size)
+		# idx_cond = idx[:, -i:]
+		for _ in range(max_new_tokens):			
 			# forward_pass it to the model, self(idx_cond) mean we passing the idx_cmd to the model
-			logits, _ = self(idx_cond) # logits, loss
+			logits, _ = self(idx) # logits, loss
 			logits = logits[:, -1, :] / temperature
 			if top_k is not None:
 				v, _ = torch.topk(logits, min(top_k, logits.size(-1))) # returns: value, index_position
 				logits[logits < v[:, [-1]]] = -float('inf') # sets -inf, if losgits[i] < val[i]
-				
 			probs    = F.softmax(logits, dim=-1)
 			idx_next = torch.multinomial(probs, num_samples=1)
 			idx      = torch.cat((idx, idx_next), dim=1) 
