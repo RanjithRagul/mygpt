@@ -16,15 +16,12 @@ class LayerNorm(nn.Module):
     def forward(self, input: Tensor) -> Tensor:
         return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
         """
-        X -> tensor, weight shape, weight, bias, epsilon to tackel zero division error
-        1. normalize the input tensor: 
+        Normalization:
+    	epslion        = 0.00001 
         mean (μ)       = sum(X)/len(X)
         variance (σ2)  = sum((n - mean)**2 for n in X) / len(X)
         normalized (z) = (x - mean) / sqrt(variance + epslion)
-        #--------------------------------
-        2. normalised @ weight + bias
-        return the input
-        1e-5 = 0.00001
+		return normalised @ weight + bias
         """
 	  
 class CausalSelfAttention(nn.Module):
