@@ -18,12 +18,9 @@ class LayerNorm(nn.Module):
         """
         X -> tensor, weight shape, weight, bias, epsilon to tackel zero division error
         1. normalize the input tensor: 
-        mean = sum(X)/len(X)
-        #--------------------------------
-        variance = sum((n - mean)**2 for n in X) / len(X)
-        #--------------------------------
-        normalized = (x - mean) / sqrt(variance + tiny number to tackle divisible by zero error)
-        NOTE: mean, variance = integer, tiny = small decimal value, x = Tensor
+        mean (μ)       = sum(X)/len(X)
+        variance (σ2)  = sum((n - mean)**2 for n in X) / len(X)
+        normalized (z) = (x - mean) / sqrt(variance + epslion)
         #--------------------------------
         2. normalised @ weight + bias
         return the input
