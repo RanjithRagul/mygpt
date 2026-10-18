@@ -8,10 +8,10 @@ from torch.nn import functional as F
 from torch import Tensor
 
 class LayerNorm(nn.Module):
-    def __init__(self, ndim:int, bias:bool):
+    def __init__(self, config:'GPTConfig'):
         super().__init__()
-        self.weight = nn.Parameter(torch.ones(ndim))
-        self.bias   = nn.Parameter(torch.zeros(ndim)) if bias else None
+        self.weight = nn.Parameter(torch.ones(config.ndim))
+        self.bias   = nn.Parameter(torch.zeros(config.ndim)) if bias else None
     
     def forward(self, input: Tensor) -> Tensor:
         return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
@@ -122,11 +122,11 @@ class MLP(nn.Module):
 		return x
 
 class Block(nn.Module):
-	def __init__(self, config):
+	def __init__(self, config:'GPTConfig'):
 		super().__init__()
-		self.ln_1 = LayerNorm(config.n_embd, bias=config.bias)
+		self.ln_1 = LayerNorm(config)
 		self.attn = CausalSelfAttention(config)
-		self.ln_2 = LayerNorm(config.n_embd, bias=config.bias)
+		self.ln_2 = LayerNorm(config)
 		self.mlp  = MLP(config)
 		
 	def forward(self, x:Tensor)->Tensor:
