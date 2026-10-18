@@ -13,8 +13,8 @@ class LayerNorm(nn.Module):
         self.weight = nn.Parameter(torch.ones(config.ndim))
         self.bias   = nn.Parameter(torch.zeros(config.ndim)) if bias else None
     
-    def forward(self, input: Tensor) -> Tensor:
-        return F.layer_norm(input, self.weight.shape, self.weight, self.bias, 1e-5)
+    def forward(self, X: Tensor) -> Tensor:
+        return F.layer_norm(X, self.weight.shape, self.weight, self.bias, 1e-5)
         """
         Normalization:
     	epslion        = 0.00001 
@@ -71,9 +71,9 @@ class CausalSelfAttention(nn.Module):
 					).view(1, 1, config.block_size, config.block_size)
 			)  
 		 
-	def forward(self, x:Tensor)->Tensor:
-		B, T, C = x.shape
-		q, k, v = self.c_attn(x).split(self.n_embd, dim=2)
+	def forward(self, X:Tensor)->Tensor:
+		B, T, C = X.shape
+		q, k, v = self.c_attn(X).split(self.n_embd, dim=2)
 		
 		q = q.view(B, T, self.n_head, C//self.n_head).transpose(1, 2)
 		k = k.view(B, T, self.n_head, C//self.n_head).transpose(1, 2)
@@ -113,13 +113,13 @@ class MLP(nn.Module):
 		erf (normal distribution)-> -1 to 1
 		'''
 		
-	def forward(self, x:Tensor)->Tensor:
+	def forward(self, X:Tensor)->Tensor:
 		# linear -> GELU -> Linear -> Dropout
-		x = self.c_fc(x)
-		x = self.gelu(x)
-		x = self.c_proj(x)
-		x = self.dropout(x)
-		return x
+		X = self.c_fc(X)
+		X = self.gelu(X)
+		X = self.c_proj(X)
+		X = self.dropout(X)
+		return X
 
 class Block(nn.Module):
 	def __init__(self, config:'GPTConfig'):
@@ -129,10 +129,10 @@ class Block(nn.Module):
 		self.ln_2 = LayerNorm(config)
 		self.mlp  = MLP(config)
 		
-	def forward(self, x:Tensor)->Tensor:
-		x = x + self.attn(self.ln_1(x))
-		x = x + self.mlp(self.ln_2(x))
-		return x
+	def forward(self, X:Tensor)->Tensor:
+		X = X + self.attn(self.ln_1(X))
+		X = X + self.mlp(self.ln_2(X))
+		return X
 
 @dataclass
 class GPTConfig:
