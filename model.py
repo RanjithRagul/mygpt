@@ -346,8 +346,8 @@ class GPT(nn.Module):
 		4 -> baclward pass (2 times of forward_Pass) 
 		------------------------------------------
 		12*L*H*Q*T:
-		QKᵀ  → roughly 2 × T² × H × Q FLOPs
-		AV   → roughly 2 × T² × H × Q FLOPs
+		QKᵀ  → roughly 2 × H × Q × T² FLOPs
+		AV   → roughly 2 × H × Q × T² FLOPs
 		4*T²*H*Q:
 		forward_Pass = 4*T²*H*Q
 		backwark_Pass = 8*T²*H*Q (2 times of forward_Pass)
