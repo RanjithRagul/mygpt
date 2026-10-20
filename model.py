@@ -334,8 +334,8 @@ class GPT(nn.Module):
 					w -= w     * self.lr * group["weight_decay"]
 	'''
 	
-	def estimate_mfu(self, fwdbwd_per_iter, dt):# need to learn
-		# estimate model flops utilization (MFU) in units of A100 bfloat16 peak FLOPS
+	def estimate_mfu(self, fwdbwd_per_iter:float, dt:float)->float:
+		# estimate Model Flops Utilization (MFU) in units of A100 bfloat16 peak FLOPS
 		N   = self.get_num_params()
 		cfg = self.config
 		L, H, Q, T = cfg.n_layer, cfg.n_head, cfg.n_embd//cfg.n_head, cfg.block_size
