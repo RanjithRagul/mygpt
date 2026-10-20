@@ -279,7 +279,7 @@ class GPT(nn.Module):
 					sd[k].copy_(sd_hf[k])
 		return model
 		
-	def configure_optimizers(self, weight_decay, learning_rate, betas, device_type):
+	def configure_optimizers(self, weight_decay:float, learning_rate:float, betas:tuple, device_type:str)->torch.optim.AdamW:
 		param_dict         = {pn:p for pn, p in self.named_parameters() if p.requires_grad}
 		decay_params       = [p for p in param_dict.values() if p.dim() > 1]
 		nodecay_params     = [p for p in param_dict.values() if p.dim() < 2]
