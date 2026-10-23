@@ -28,10 +28,10 @@ class CausalSelfAttention(nn.Module):
 	def __init__(self, config:"GPTConfig"):
 		assert config.n_embd % config.n_head == 0
 		super().__init__()
-		self.n_head : int   = config.n_head
-		self.n_embd : int   = config.n_embd
-		self.dropout: float = config.dropout
-		self.use_bias   : float = config.bias
+		self.n_head  : int   = config.n_head
+		self.n_embd  : int   = config.n_embd
+		self.dropout : float = config.dropout
+		self.use_bias: bool  = config.bias
 		self.c_attn = nn.Linear(self.n_embd, 3 * self.n_embd, bias=self.use_bias)
 		self.c_proj = nn.Linear(self.n_embd, self.n_embd,     bias=self.use_bias)
 		'''
@@ -168,13 +168,13 @@ class GPT(nn.Module):
 		print(f"Total Parameters: {self.get_num_params()/million:,.2f}M") # 1,234.23
 		
 		
-	def get_num_params(self, non_embedding:bool=True)->float:
+	def get_num_params(self, non_embedding:bool=True)->int:
 		n_param = sum(p.numel() for p in self.parameters())
 		if non_embedding:
 			n_param -= self.transformer.wpe.weight.numel()
 		return n_param
 		
-	def _init_weights(self, module:Tensor)->None:
+	def _init_weights(self, module:nn.Module)->None:
 		if isinstance(module, nn.Linear):
 			nn.init.normal_(module.weight, mean=0.0, std=0.02)
 			if module.bias is not None:
@@ -221,7 +221,7 @@ class GPT(nn.Module):
 				block.attn.bias = block.attn.bias[:, :, :block_size, :block_size]
 
 	@classmethod
-	def from_pretrained(cls, model_type:str, override_args=None)->Tensor:
+	def from_pretrained(cls, model_type:str, override_args=None)->GPT:
 		assert model_type in {'gpt2', 'gpt2-medium', 'gpt2-large', 'gpt2-xl'}
 		
 		override_args = override_args or {}
