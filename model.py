@@ -221,7 +221,7 @@ class GPT(nn.Module):
 				block.attn.bias = block.attn.bias[:, :, :block_size, :block_size]
 
 	@classmethod
-	def from_pretrained(cls, model_type:str, override_args=None)->GPT:
+	def from_pretrained(cls, model_type:str, override_args=None)->"GPT":
 		assert model_type in {'gpt2', 'gpt2-medium', 'gpt2-large', 'gpt2-xl'}
 		
 		override_args = override_args or {}
