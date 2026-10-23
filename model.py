@@ -31,9 +31,9 @@ class CausalSelfAttention(nn.Module):
 		self.n_head : int   = config.n_head
 		self.n_embd : int   = config.n_embd
 		self.dropout: float = config.dropout
-		self.bias   : float = config.bias
-		self.c_attn = nn.Linear(self.n_embd, 3 * self.n_embd, bias=self.bias)
-		self.c_proj = nn.Linear(self.n_embd, self.n_embd, bias=self.bias)
+		self.use_bias   : float = config.bias
+		self.c_attn = nn.Linear(self.n_embd, 3 * self.n_embd, bias=self.use_bias)
+		self.c_proj = nn.Linear(self.n_embd, self.n_embd,     bias=self.use_bias)
 		'''
 		nn.linear
 		1. input @ w.T + bias
@@ -88,13 +88,13 @@ class CausalSelfAttention(nn.Module):
 			)
 		else:
 			# Q @ K**T -> mask_fill -> softmax -> dropout -> att @ v
-			att = q @ k.transpose(1, 2) / math.sqrt(k.size(-1)) # here (1, 2) != (-1, -2) because its a 4D
+			att = q @ k.transpose(-2, -1) / math.sqrt(k.size(-1)) # here (1, 2) != (-1, -2) because its a 4D
 			att = att.masked_fill(self.bias[:, :, :T, :T] == 0, float('-inf'))
 			att = F.softmax(att, dim=-1)
 			att = self.attn_dropout(att)
 			y   = att @ v
 		# transpose -> c_proj (2nd Linear) -> resid_proj (2nd Dropout)
-		y = y.transpose(-2, -1).contiguous().view(B, T, C)
+		y = y.transpose(1, 2).contiguous().view(B, T, C)
 		y = self.c_proj(y)
 		y = self.resid_dropout(y)
 		return y
