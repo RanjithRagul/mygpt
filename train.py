@@ -209,6 +209,7 @@ if compile:
 
 if ddp:
   model = DDP(model, device_ids = [ddp_local_rank])
+raw_model = model.module if ddp else model
 
 @torch.no_grad()
 def estimate_loss():
@@ -241,7 +242,6 @@ if wandb_log and master_process:
 t0   = time.time()
 running_mfu    = -1.0
 local_iter_num = 0
-raw_model = model.module if ddp else model
 
 while True:
   lr = get_lr(iter_num) if decay_lr else learning_rate
