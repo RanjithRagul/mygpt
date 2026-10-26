@@ -293,9 +293,11 @@ while True:
     torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
   scaler.step(optimizer)
   scaler.update()
+  
   optimizer.zero_grad(set_to_none=True)
-
   # timing and logging
+  if device_type == 'cuda':
+    torch.cuda.synchronize()
   t1 = time.time()
   dt = t1 - t0
   t0 = t1
