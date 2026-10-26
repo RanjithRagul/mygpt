@@ -158,12 +158,10 @@ elif init_from == 'resume':
   model = GPT(gptconfig)
   
   state_dict = checkpoint['model']
-  unwanted_prefix = '_orig_mod.'
-  N_unwanted_prefix = len(unwanted_prefix)
-  
+  unwanted_prefix = '_orig_mod.'  
   for k, v in list(state_dict.items()):
     if k.startswith(unwanted_prefix):
-      state_dict[k[N_unwanted_prefix:]] = state_dict.pop(k)
+      state_dict[k[len(unwanted_prefix):]] = state_dict.pop(k)
       
   model.load_state_dict(state_dict)
   iter_num = checkpoint['iter_num']
