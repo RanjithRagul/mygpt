@@ -219,7 +219,7 @@ def estimate_loss():
     for k in range(eval_iters):
       X, Y = get_batch(state)
       with ctx:
-        logits, loss = model(X, Y)
+        logits, loss = raw_model(X, Y)
       losses[k] = loss.item()
     out[state]  = losses.mean()
   model.train()
