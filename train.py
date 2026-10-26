@@ -62,7 +62,7 @@ if ddp: # GPU
   ddp_rank       = int(os.environ['RANK'])
   ddp_local_rank = int(os.environ['LOCAL_RANK'])
   ddp_world_size = int(os.environ['WORLD_SIZE'])
-  assert gradient_accumulation % ddp_world_size == 0
+  assert gradient_accumulation_step % ddp_world_size == 0
 
   master_process = ddp_rank ==  0
   seed_offset    = ddp_rank
