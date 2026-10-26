@@ -79,9 +79,8 @@ else: # CPU
   ddp_world_size = 1
 
 token_per_iter = gradient_accumulation_steps * ddp_world_size * batch_size * block_size
-print(f'tokens per iteration will be: {token_per_iter:,}')
-
 if master_process:
+  print(f'tokens per iteration will be: {token_per_iter:,}')
   os.makedirs(out_dir, exist_ok=True)
 
 torch.backends.cuda.matmul.allow_tf32 = True
