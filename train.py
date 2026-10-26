@@ -245,6 +245,8 @@ running_mfu    = -1.0
 local_iter_num = 0
 
 while True:
+  if max_iters < iter_num:
+    break
   lr = get_lr(iter_num) if decay_lr else learning_rate
   for param_group in optimizer.param_groups:
     param_group['lr'] = lr
@@ -311,9 +313,6 @@ while True:
   
   iter_num += 1
   local_iter_num += 1
-  
-  if max_iters < iter_num:
-    break
 
 if ddp:
   destroy_process_group()
