@@ -276,7 +276,7 @@ while True:
         print(f'saving checkpoint to {out_dir}')
         torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
 
-  if iter_num == 0 and eval_only:
+  if eval_only:
     break
 
   for micro_step in range(gradient_accumulation_steps):
