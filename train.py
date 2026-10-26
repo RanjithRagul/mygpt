@@ -206,7 +206,7 @@ if compile:
   model = torch.compile(model) # torch >= 2.0
 
 if ddp:
-  model = DDP(model, devive_ids = [ddp_local_rank])
+  model = DDP(model, device_ids = [ddp_local_rank])
 
 @torch.no_grad()
 def estimate_loss():
