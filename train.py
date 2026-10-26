@@ -37,7 +37,7 @@ wandb_project  = 'owt'
 wandb_run_name = 'gpt2'
 #------------------------------ adamW optimizer --------------------------------
 # (BMW)² LC DG, bmw local dog 
-complie = True
+compile = True
 learning_rate = 6e-4 # 0.6000
 max_iters = 600000 
 weight_decay = 1e-1 # 0.1
